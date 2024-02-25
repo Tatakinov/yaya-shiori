@@ -9,6 +9,7 @@
 # include "stdafx.h"
 #endif
 
+#include <sstream>
 #include <string>
 #include <vector>
 
@@ -821,15 +822,18 @@ char	CParser0::DefineFunctions(std::vector<yaya::string_t>& s, const yaya::strin
 				yaya::string_t	d0, d1;
 				if (!Split(*it, d0, d1, L":"))
 					d0 = *it;
-				// 関数名の正当性検査
-				if (IsLegalFunctionName(d0)) {
-					if (!it->compare(L"{"))
-						vm.logger().Error(E_E, 1, L"{", dicfilename, linecount);
-					else if (!it->compare(L"}"))
-						vm.logger().Error(E_E, 2, dicfilename, linecount);
-					else
-						vm.logger().Error(E_E, 3, d0, dicfilename, linecount);
-					return 1;
+				// 関数名がシステム関数と被っていたら
+                // 色々付け足して通す
+				if (IsLegalFunctionName(d0) == 5) {
+					yaya::string_t name;
+					int index = 0;
+					do {
+						std::wostringstream woss;
+						woss << L"Conflict." << d0 << L"." << index;
+						name = woss.str();
+						index++;
+					} while (IsLegalFunctionName(name));
+					d0 = name;
 				}
 				// 重複回避オプションの判定
 				choicetype_t	chtype = CHOICETYPE_RANDOM;
@@ -838,9 +842,18 @@ char	CParser0::DefineFunctions(std::vector<yaya::string_t>& s, const yaya::strin
 				}
 				// 作成
 				targetfunction = MakeFunction(d0, chtype, dicfilename, linecount);
+				// 失敗したら関数名を被らないようにして作り直す
 				if (targetfunction == -1) {
-					vm.logger().Error(E_E, 13, *it, dicfilename, linecount);
-					return 1;
+					yaya::string_t name;
+					int index = 0;
+					do {
+						std::wostringstream woss;
+						woss << L"Conflict." << d0 << L"." << index;
+						name = woss.str();
+						index++;
+						targetfunction = MakeFunction(name, chtype, dicfilename, linecount);
+					} while (targetfunction == -1);
+					d0 = name;
 				}
 				continue;
 			}
