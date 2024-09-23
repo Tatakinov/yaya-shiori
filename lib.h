@@ -33,13 +33,16 @@ protected:
 
 	bool (*loadlib)(yaya::global_t h, long len);
 	bool (*unloadlib)(void);
+	yaya::global_t (*requestlib)(yaya::global_t h, long *len);
 #elif defined(POSIX)
 	typedef void*	module_t;
 
-	int (*loadlib)(char* h, long len);
-	int (*unloadlib)(void);
+	long (*loadlib)(yaya::global_t h, long len);
+	int (*unloadlib)(long id);
+	yaya::global_t (*requestlib)(long id, yaya::global_t h, long *len);
+
+    long id;
 #endif
-	yaya::global_t (*requestlib)(yaya::global_t h, long *len);
 
 	module_t hDLL;
 	bool    isAlreadyLoaded;

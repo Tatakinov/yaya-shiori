@@ -256,7 +256,7 @@ int CLib1::Load(void) {
     
     // アドレス取得
 	if (loadlib == NULL)
-	 loadlib = (int(*)(char*,long))dlsym(hDLL, "load");
+	 loadlib = (long(*)(char*,long))dlsym(hDLL, "load");
     if (loadlib == NULL) {
 	 return 0;
     }
@@ -278,7 +278,7 @@ int CLib1::Load(void) {
     memcpy(gmem, dllpath.c_str(), len);
 
     // 実行
-    (*loadlib)(gmem, len);
+    id = (*loadlib)(gmem, len);
     
     return 1;
 }
@@ -320,13 +320,13 @@ int CLib1::Unload(void) {
 
     // アドレス取得
 	if (unloadlib == NULL)
-     unloadlib = (int(*)(void))dlsym(hDLL, "unload");
+     unloadlib = (int(*)(long))dlsym(hDLL, "unload");
     if (unloadlib == NULL) {
 	 return 0;
     }
 
     // 実行
-    (*unloadlib)();
+    (*unloadlib)(id);
     
     return 1;
 }
@@ -439,7 +439,7 @@ int CLib1::Request(const yaya::string_t &istr, yaya::string_t &ostr) {
     
     // アドレス取得
 	if (requestlib == NULL)
-    requestlib = (char*(*)(char*, long *))dlsym(hDLL, "request");
+    requestlib = (char*(*)(long, char*, long *))dlsym(hDLL, "request");
     if (requestlib == NULL) {
 	return 0;
     }
@@ -459,10 +459,11 @@ int CLib1::Request(const yaya::string_t &istr, yaya::string_t &ostr) {
 	t_istr = NULL;
 
     // 実行
-    char* ogmem = (*requestlib)(igmem, &len);
+    char* ogmem = (*requestlib)(id, igmem, &len);
 
     // 結果取得
 	std::string t_ostr(ogmem, len);
+    free(ogmem);
 
     // 結果をUCS-2へ変換
     wchar_t *t_ostr2 = Ccct::MbcsToUcs2(t_ostr, charset);
