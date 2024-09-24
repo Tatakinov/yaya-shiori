@@ -277,7 +277,7 @@ int CLib1::Load(void) {
 	int (*loadlib)(char* h, long len) = NULL;
 
 	if (loadlib == NULL)
-	 loadlib = (long(*)(char*,long))dlsym(hDLL, "load");
+	 loadlib = (long(*)(char*,long))dlsym(hDLL, "multi_load");
     if (loadlib == NULL) {
 	 return 0;
     }
@@ -346,7 +346,7 @@ int CLib1::Unload(void) {
 	int (*unloadlib)(void) = NULL;
 
 	if (unloadlib == NULL)
-     unloadlib = (int(*)(long))dlsym(hDLL, "unload");
+     unloadlib = (int(*)(long))dlsym(hDLL, "multi_unload");
     if (unloadlib == NULL) {
 	 return 0;
     }
@@ -466,7 +466,7 @@ int CLib1::Request(const yaya::string_t &istr, yaya::string_t &ostr) {
     
     // ƒAƒhƒŒƒXŽæ“¾
 	if (requestlib == NULL)
-    requestlib = (char*(*)(long, char*, long *))dlsym(hDLL, "request");
+    requestlib = (char*(*)(long, char*, long *))dlsym(hDLL, "multi_request");
     if (requestlib == NULL) {
 	return 0;
     }
