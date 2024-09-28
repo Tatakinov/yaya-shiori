@@ -42,6 +42,7 @@ protected:
 	yaya::global_t (*requestlib)(long id, yaya::global_t h, long *len);
 
     long id;
+    std::string filename;
 #endif
 
 	module_t hDLL;
