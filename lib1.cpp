@@ -269,7 +269,7 @@ int CLib1::Load(void) {
     
     // アドレス取得
 	if (loadlib == NULL) {
-        std::string func_name = filename + "_multi_load";
+        std::string func_name = filename + "_saori_load";
 		loadlib = (long(*)(char*,long))dlsym(hDLL, func_name.c_str());
     }
     if (loadlib == NULL) {
@@ -335,7 +335,7 @@ int CLib1::Unload(void) {
 
     // アドレス取得
 	if (unloadlib == NULL) {
-        std::string func_name = filename + "_multi_unload";
+        std::string func_name = filename + "_saori_unload";
     	unloadlib = (int(*)(long))dlsym(hDLL, func_name.c_str());
     }
     if (unloadlib == NULL) {
@@ -456,7 +456,7 @@ int CLib1::Request(const yaya::string_t &istr, yaya::string_t &ostr) {
     
     // アドレス取得
 	if (requestlib == NULL) {
-        std::string func_name = filename + "_multi_request";
+        std::string func_name = filename + "_saori_request";
     	requestlib = (char*(*)(long, char*, long *))dlsym(hDLL, func_name.c_str());
     }
     if (requestlib == NULL) {
