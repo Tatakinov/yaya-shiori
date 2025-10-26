@@ -314,7 +314,7 @@ int CLib1::Load(void) {
     memcpy(gmem, dllpath.c_str(), len);
 
     // 実行
-    id = (*loadlib)(gmem, len);
+    (*loadlib)(gmem, len);
     
     return 1;
 }
@@ -358,17 +358,11 @@ int CLib1::Unload(void) {
     }
 
     // アドレス取得
-<<<<<<< HEAD
 	int (*unloadlib)(void) = NULL;
-
-	if (unloadlib == NULL)
-     unloadlib = (int(*)(long))dlsym(hDLL, "multi_unload");
-=======
 	if (unloadlib == NULL) {
         std::string func_name = filename + "_saori_unload";
     	unloadlib = (int(*)(long))dlsym(hDLL, func_name.c_str());
     }
->>>>>>> 74e8c54 (saori繧呈眠蝓コ貅悶繧ゅ縺ォ螟画峩縲
     if (unloadlib == NULL) {
 	 return 0;
     }
@@ -510,7 +504,7 @@ int CLib1::Request(const yaya::string_t &istr, yaya::string_t &ostr) {
 	t_istr = NULL;
 
     // 実行
-    char* ogmem = (*requestlib)(id, igmem, &len);
+    char* ogmem = (*requestlib)(igmem, &len);
 
     // 結果取得
 	std::string t_ostr(ogmem, len);
